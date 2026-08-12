@@ -1,0 +1,9 @@
+flowchart LR
+    User(["Vai Usuario!<br>Pesquisa Livro!<br>Agora!"]);
+    Librarian(["Bibliotecario<br>cadastra livro e gerencia empréstimo"]);
+    System["Sistema da Biblioteca"];
+    Email["Serviço de e-mail"];
+
+    User -->|pesquisa e espresta|System
+    Librarian -->|cadastra e gerencia livro|System
+    System -->|avisa prazo tá vencendo| Email
