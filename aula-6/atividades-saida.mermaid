@@ -1,0 +1,23 @@
+flowchart TD
+    inicio([Início]) --> solicitar[Informar produto e quantidade de saída]
+    solicitar --> quantidade{Quantidade positiva?}
+    quantidade -->|Não| invalida[Recusar saída por quantidade inválida]
+    quantidade -->|Sim| consultar[Consultar produto e saldo na transação]
+    consultar --> existe{Produto existe?}
+    existe -->|Não| ausente[Recusar saída por produto inexistente]
+    existe -->|Sim| descontinuado{Status DESCONTINUADO?}
+    descontinuado -->|Sim| bloqueado[Recusar saída por produto descontinuado]
+    descontinuado -->|Não| saldo{Saldo cobre a quantidade solicitada?}
+    saldo -->|Não| insuficiente[Recusar saída por saldo insuficiente]
+    saldo -->|Sim| baixar[Subtrair quantidade do saldo]
+    baixar --> zerou{Saldo resultante igual a zero?}
+    zerou -->|Sim| indisponivel[Definir status INDISPONÍVEL]
+    zerou -->|Não| disponivel[Definir status DISPONÍVEL]
+    indisponivel --> salvar[Salvar saldo e status na mesma transação]
+    disponivel --> salvar
+    salvar --> confirmar[Confirmar saída]
+    confirmar --> fim([Fim])
+    invalida --> fim
+    ausente --> fim
+    bloqueado --> fim
+    insuficiente --> fim

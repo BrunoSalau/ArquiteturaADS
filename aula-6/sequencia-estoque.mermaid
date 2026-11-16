@@ -1,0 +1,35 @@
+sequenceDiagram
+    actor Usuario as Usuário
+    participant Tela as Tela de estoque
+    participant Controller as Controlador de estoque
+    participant Estoque as Serviço de estoque
+    participant Repo as Repositório de produtos
+
+    Usuario->>Tela: Seleciona produto, operação e quantidade
+    Tela->>Controller: Solicita movimentação
+    Controller->>Estoque: Valida e processa a solicitação
+    alt Quantidade inválida
+        Estoque-->>Controller: Quantidade deve ser positiva
+    else Quantidade válida
+        Estoque->>Repo: Consulta produto e saldo dentro da transação
+        Repo-->>Estoque: Produto, status e saldo
+        alt Produto inexistente
+            Estoque-->>Controller: Produto não encontrado
+        else Produto descontinuado
+            Estoque-->>Controller: Movimentação bloqueada
+        else Saída com saldo insuficiente
+            Estoque-->>Controller: Saldo insuficiente
+        else Entrada ou saída autorizada
+            alt Entrada
+                Estoque->>Estoque: Soma quantidade ao saldo
+            else Saída
+                Estoque->>Estoque: Subtrai quantidade do saldo
+            end
+            Estoque->>Estoque: Define status conforme o saldo resultante
+            Estoque->>Repo: Salva saldo e status na mesma transação
+            Repo-->>Estoque: Confirma gravação
+            Estoque-->>Controller: Retorna saldo e status atualizados
+        end
+    end
+    Controller-->>Tela: Retorna resultado da solicitação
+    Tela-->>Usuario: Exibe confirmação ou motivo da recusa

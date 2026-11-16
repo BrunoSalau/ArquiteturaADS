@@ -1,0 +1,15 @@
+stateDiagram-v2
+    state "INDISPONÍVEL" as Indisponivel
+    state "DISPONÍVEL" as Disponivel
+    state "DESCONTINUADO" as Descontinuado
+
+    [*] --> Indisponivel: Cadastro com saldo zero
+    Indisponivel --> Disponivel: Entrada eleva o saldo acima de zero
+    Disponivel --> Indisponivel: Saída zera o saldo
+    Disponivel --> Disponivel: Movimentação mantém saldo positivo
+    Indisponivel --> Descontinuado: Administrador descontinua o produto
+    Disponivel --> Descontinuado: Administrador descontinua o produto
+
+    note right of Descontinuado
+        Entradas e saídas bloqueadas
+    end note
