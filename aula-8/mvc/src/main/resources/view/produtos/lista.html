@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Produtos')}"></head>
+<body>
+  <header th:replace="~{fragments/layout :: menu}"></header>
+  <main>
+    <h1>Produtos</h1>
+    <a class="botao" th:href="@{/produtos/novo}">Novo produto</a>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Nome</th><th>Preço</th><th>Estoque</th><th>Status</th><th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="p : ${produtos}">
+          <td th:text="${p.id}"></td>
+          <td th:text="${p.nome}"></td>
+          <td th:text="|R$ ${#numbers.formatDecimal(p.preco, 1, 'POINT', 2, 'COMMA')}|"></td>
+          <td th:text="${p.quantidadeEstoque}"></td>
+          <td><span th:class="|status status-${p.status}|" th:text="${p.status.descricao}"></span></td>
+          <td>
+            <a th:href="@{/produtos/{id}/editar(id=${p.id})}">Editar</a>
+            <form th:unless="${p.descontinuado}" class="inline" method="post"
+                  th:action="@{/produtos/{id}/descontinuar(id=${p.id})}"
+                  onsubmit="return confirm('Descontinuar este produto?')">
+              <button type="submit" class="perigo"
+                      th:title="${perfilAtual.name() == 'ADM'} ? 'Descontinuar' : 'Somente o administrador pode descontinuar'">
+                Descontinuar
+              </button>
+            </form>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(produtos)}">
+          <td colspan="6">Nenhum produto cadastrado.</td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(titulo)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${titulo}">Projeto MVC</title>
+  <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+  <header th:fragment="menu">
+    <nav>
+      <strong>Projeto MVC</strong>
+      <a th:href="@{/produtos}">Produtos</a>
+      <a th:href="@{/estoque}">Estoque</a>
+      <a th:href="@{/pedidos}">Pedidos</a>
+      <form th:action="@{/perfil}" method="post" class="perfil">
+        <label>Perfil:
+          <select name="perfil" onchange="this.form.submit()">
+            <option th:each="p : ${perfis}" th:value="${p}" th:text="${p.descricao}"
+                    th:selected="${p == perfilAtual}"></option>
+          </select>
+        </label>
+      </form>
+    </nav>
+    <p th:if="${erro}" class="msg erro" th:text="${erro}"></p>
+    <p th:if="${sucesso}" class="msg sucesso" th:text="${sucesso}"></p>
+  </header>
+</body>
+</html>

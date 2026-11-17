@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Projeto MVC')}"></head>
+<body>
+  <header th:replace="~{fragments/layout :: menu}"></header>
+  <main>
+    <h1>Projeto MVC</h1>
+    <div class="card">
+      <p><a class="botao" th:href="@{/produtos}">Produtos</a> cadastro e status do produto.</p>
+      <p><a class="botao" th:href="@{/estoque}">Estoque</a> entrada e saída de estoque.</p>
+      <p><a class="botao" th:href="@{/pedidos}">Pedidos</a> venda: ao fechar, o pedido é enviado ao hub de faturamento.</p>
+    </div>
+  </main>
+</body>
+</html>

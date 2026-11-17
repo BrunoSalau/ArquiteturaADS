@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Estoque')}"></head>
+<body>
+  <header th:replace="~{fragments/layout :: menu}"></header>
+  <main>
+    <h1>Estoque</h1>
+    <p>Produtos descontinuados não aparecem aqui, pois não podem ser movimentados.</p>
+
+    <div class="grid">
+      <form class="card" method="post" th:action="@{/estoque/entrada}">
+        <h2>Entrada</h2>
+        <label for="produtoEntrada">Produto</label>
+        <select id="produtoEntrada" name="produtoId" required>
+          <option th:each="p : ${produtos}" th:value="${p.id}"
+                  th:text="|${p.nome} (saldo ${p.quantidadeEstoque} - ${p.status.descricao})|"></option>
+        </select>
+        <label for="qtdEntrada">Quantidade</label>
+        <input id="qtdEntrada" name="quantidade" type="number" min="1" required>
+        <label for="obsEntrada">Observação</label>
+        <input id="obsEntrada" name="observacao" type="text" placeholder="Ex.: nota do fornecedor">
+        <p><button type="submit">Registrar entrada</button></p>
+      </form>
+
+      <form class="card" method="post" th:action="@{/estoque/saida}">
+        <h2>Saída</h2>
+        <label for="produtoSaida">Produto</label>
+        <select id="produtoSaida" name="produtoId" required>
+          <option th:each="p : ${produtos}" th:value="${p.id}"
+                  th:text="|${p.nome} (saldo ${p.quantidadeEstoque} - ${p.status.descricao})|"></option>
+        </select>
+        <label for="qtdSaida">Quantidade</label>
+        <input id="qtdSaida" name="quantidade" type="number" min="1" required>
+        <label for="obsSaida">Observação</label>
+        <input id="obsSaida" name="observacao" type="text" placeholder="Ex.: venda, perda, ajuste">
+        <p><button type="submit">Registrar saída</button></p>
+      </form>
+    </div>
+
+    <h2>Histórico de movimentações</h2>
+    <table>
+      <thead>
+        <tr><th>Data/hora</th><th>Produto</th><th>Tipo</th><th>Qtd.</th><th>Saldo após</th><th>Observação</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="m : ${movimentacoes}">
+          <td th:text="${#temporals.format(m.dataHora, 'dd/MM/yyyy HH:mm:ss')}"></td>
+          <td th:text="${m.produto.nome}"></td>
+          <td th:text="${m.tipo}"></td>
+          <td th:text="${m.quantidade}"></td>
+          <td th:text="${m.saldoApos}"></td>
+          <td th:text="${m.observacao}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(movimentacoes)}">
+          <td colspan="6">Nenhuma movimentação registrada.</td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

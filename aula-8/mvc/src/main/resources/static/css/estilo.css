@@ -1,0 +1,25 @@
+body { font-family: system-ui, sans-serif; margin: 0; color: #222; background: #f6f7f9; }
+main { max-width: 1000px; margin: 24px auto; padding: 0 16px; }
+nav { display: flex; gap: 16px; align-items: center; padding: 12px 24px; background: #1f3a5f; color: #fff; }
+nav a { color: #fff; text-decoration: none; }
+nav a:hover { text-decoration: underline; }
+nav .perfil { margin-left: auto; }
+table { width: 100%; border-collapse: collapse; background: #fff; margin: 12px 0 24px; }
+th, td { padding: 8px 10px; border-bottom: 1px solid #e2e5ea; text-align: left; }
+th { background: #eef1f5; }
+form.inline { display: inline; }
+.card { background: #fff; padding: 16px; border-radius: 6px; margin-bottom: 16px; border: 1px solid #e2e5ea; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+label { display: block; margin: 8px 0 4px; }
+nav label { display: inline; margin: 0; }
+input, select, textarea { padding: 6px; min-width: 200px; }
+button, .botao { padding: 6px 12px; border: 0; border-radius: 4px; background: #1f3a5f; color: #fff; cursor: pointer; text-decoration: none; display: inline-block; }
+button.perigo { background: #a33; }
+.msg { margin: 0; padding: 10px 24px; }
+.erro { background: #fde8e8; color: #8a1c1c; }
+.sucesso { background: #e6f6ea; color: #1d6b32; }
+.status { padding: 2px 8px; border-radius: 10px; font-size: 0.85em; }
+.status-DISPONIVEL, .status-FATURADO { background: #e6f6ea; color: #1d6b32; }
+.status-INDISPONIVEL, .status-FECHADO { background: #fff4d6; color: #7a5a00; }
+.status-DESCONTINUADO { background: #e9e9e9; color: #555; }
+.status-ABERTO { background: #e5efff; color: #1f3a5f; }

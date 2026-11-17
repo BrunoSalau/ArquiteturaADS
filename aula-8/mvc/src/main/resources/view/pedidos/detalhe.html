@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Pedido')}"></head>
+<body>
+  <header th:replace="~{fragments/layout :: menu}"></header>
+  <main>
+    <h1 th:text="|Pedido #${pedido.id}|">Pedido</h1>
+
+    <div class="card">
+      <p><strong>Cliente:</strong> <span th:text="|${pedido.cliente} (${pedido.emailCliente})|"></span></p>
+      <p><strong>Status:</strong>
+        <span th:class="|status status-${pedido.status}|" th:text="${pedido.status.descricao}"></span></p>
+      <p th:if="${pedido.faturaId}"><strong>ID da fatura no hub:</strong> <code th:text="${pedido.faturaId}"></code></p>
+      <p th:if="${pedido.erroIntegracao}" class="msg erro">
+        <strong>Falha na integração:</strong> <span th:text="${pedido.erroIntegracao}"></span>
+      </p>
+      <form th:if="${pedido.aguardandoFatura}" method="post" th:action="@{/pedidos/{id}/reenviar(id=${pedido.id})}"
+            onsubmit="return confirm('Confira no hub se a fatura já existe. Reenviar sem essa conferência pode duplicar a cobrança. Deseja continuar?')">
+        <p>A resposta pode ter sido perdida após o faturamento. Confira o hub antes de reenviar.</p>
+        <button type="submit">Reenviar ao hub</button>
+      </form>
+    </div>
+
+    <form th:if="${pedido.aberto}" class="card" method="post" th:action="@{/pedidos/{id}/itens(id=${pedido.id})}">
+      <h2>Adicionar item</h2>
+      <label for="produtoId">Produto (somente disponíveis)</label>
+      <select id="produtoId" name="produtoId" required>
+        <option th:each="p : ${produtos}" th:value="${p.id}"
+                th:text="|${p.nome} - R$ ${#numbers.formatDecimal(p.preco, 1, 'POINT', 2, 'COMMA')} (saldo ${p.quantidadeEstoque})|"></option>
+      </select>
+      <label for="quantidade">Quantidade</label>
+      <input id="quantidade" name="quantidade" type="number" min="1" value="1" required>
+      <p><button type="submit">Adicionar</button></p>
+    </form>
+
+    <h2>Itens</h2>
+    <table>
+      <thead>
+        <tr><th>Produto</th><th>Qtd.</th><th>Preço unit.</th><th>Subtotal</th><th></th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="i : ${pedido.itens}">
+          <td th:text="${i.produto.nome}"></td>
+          <td th:text="${i.quantidade}"></td>
+          <td th:text="|R$ ${#numbers.formatDecimal(i.precoUnitario, 1, 'POINT', 2, 'COMMA')}|"></td>
+          <td th:text="|R$ ${#numbers.formatDecimal(i.subtotal, 1, 'POINT', 2, 'COMMA')}|"></td>
+          <td>
+            <form th:if="${pedido.aberto}" class="inline" method="post"
+                  th:action="@{/pedidos/{id}/itens/{itemId}/remover(id=${pedido.id}, itemId=${i.id})}">
+              <button type="submit" class="perigo">Remover</button>
+            </form>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(pedido.itens)}">
+          <td colspan="5">Nenhum item.</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="3">Total</th>
+          <th th:text="|R$ ${#numbers.formatDecimal(pedido.valorTotal, 1, 'POINT', 2, 'COMMA')}|"></th>
+          <th></th>
+        </tr>
+      </tfoot>
+    </table>
+
+    <form th:if="${pedido.aberto}" method="post" th:action="@{/pedidos/{id}/fechar(id=${pedido.id})}"
+          onsubmit="return confirm('Fechar o pedido? O estoque será baixado e o pedido enviado ao hub de faturamento.')">
+      <button type="submit">Fechar pedido e faturar</button>
+    </form>
+    <p><a th:href="@{/pedidos}">Voltar</a></p>
+  </main>
+</body>
+</html>
